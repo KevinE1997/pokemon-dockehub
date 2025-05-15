@@ -1,21 +1,17 @@
-# Usa una imagen base de NGINX para servir contenido estático
 FROM nginx:alpine
 
-# Instalar gettext para usar envsubst
+# Instala envsubst para reemplazar variables de entorno
 RUN apk add --no-cache gettext
 
-# Copia plantilla de configuración nginx
+# Copia el HTML estático
+COPY index.html /usr/share/nginx/html/
+
+# Copia la plantilla de configuración de nginx
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
 
-# Copia tu app al directorio de NGINX
-COPY . /usr/share/nginx/html
-
-# Copia script de arranque
+# Copia el script de arranque personalizado
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-# Exponer el puerto por defecto de nginx
-EXPOSE 80
-
-# Usa script como entrypoint para reemplazar puerto y arrancar nginx
+# Define el entrypoint como nuestro script
 ENTRYPOINT ["/docker-entrypoint.sh"]
