@@ -1,4 +1,4 @@
-name: Deploy Static Site to Vercel
+name: Build Docker Image, Push to Docker Hub, and Deploy to Vercel
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker
+    - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
 
     - name: Log in to Docker Hub
@@ -24,11 +24,11 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t myusername/myapp:${{ github.sha }} .
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/pokemon:${{ github.sha }} .
     
     - name: Push Docker image to Docker Hub
       run: |
-        docker push myusername/myapp:${{ github.sha }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/pokemon:${{ github.sha }}
 
     - name: Deploy to Vercel
       uses: amondnet/vercel-action@v25
